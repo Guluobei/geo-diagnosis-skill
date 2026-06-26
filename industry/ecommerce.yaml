@@ -1,0 +1,97 @@
+name: 电商
+description: 电商行业配置，适用于电商平台、品牌方及电商服务商
+extends: _default
+
+target_users:
+  - type: 跨境电商卖家
+    needs: 选品工具、物流方案、支付合规、海外市场洞察
+    typical_queries: ["{brand}支持哪些国家", "{brand}物流时效", "{brand}手续费"]
+  - type: 国内电商运营
+    needs: 店铺运营工具、数据分析、营销推广、供应链管理
+    typical_queries: ["{brand}运营工具", "{brand}数据分析", "{brand}和生意参谋对比"]
+  - type: 品牌方
+    needs: 品牌保护、渠道管理、消费者洞察、全域营销
+    typical_queries: ["{brand}品牌保护", "{brand}渠道管控", "{brand}消费者分析"]
+  - type: 直播电商从业者
+    needs: 直播工具、选品数据、主播管理、带货效率
+    typical_queries: ["{brand}直播工具", "{brand}选品数据", "{brand}主播管理"]
+
+question_categories:
+  - type: 品牌词
+    examples: ["{brand}怎么样", "{brand}评价", "{brand}官网", "{brand}靠谱吗"]
+    priority: high
+  - type: 产品词
+    examples: ["{brand}产品介绍", "{brand}功能", "{brand}价格", "{brand}套餐"]
+    priority: high
+  - type: 场景词
+    examples: ["{brand}跨境电商使用", "{brand}直播带货工具", "{brand}如何入驻"]
+    priority: high
+  - type: 对比词
+    examples: ["{brand}和{competitor}对比", "{brand}替代品", "{brand}vs{competitor}"]
+    priority: high
+  - type: 价格词
+    examples: ["{brand}收费吗", "{brand}收费标准", "{brand}免费版"]
+    priority: medium
+  - type: 服务词
+    examples: ["{brand}售后服务", "{brand}客服电话", "{brand}退款政策"]
+    priority: medium
+  - type: 长尾词
+    examples: ["{brand}适合新手吗", "{brand}值得用吗", "{brand}真实评价"]
+    priority: low
+
+ai_platforms:
+  - name: 豆包
+    url: https://www.doubao.com
+    weight: 1.0
+  - name: 百度AI搜索
+    url: https://www.baidu.com
+    weight: 0.9
+  - name: Kimi
+    url: https://kimi.moonshot.cn
+    weight: 0.85
+  - name: 通义千问
+    url: https://tongyi.aliyun.com
+    weight: 0.8
+  - name: 智谱清言
+    url: https://chatglm.cn
+    weight: 0.75
+
+content_types:
+  - name: 产品功能介绍
+    priority: P0
+  - name: 定价方案
+    priority: P0
+  - name: 入驻指南
+    priority: P0
+  - name: 使用教程
+    priority: P0
+  - name: 客户案例
+    priority: P1
+  - name: 常见问题FAQ
+    priority: P1
+  - name: 物流说明
+    priority: P1
+  - name: 售后政策
+    priority: P1
+  - name: 行业解决方案
+    priority: P2
+  - name: 合规指南
+    priority: P2
+
+scoring_weights:
+  brand_mention: 0.20
+  answer_accuracy: 0.20
+  source_citation: 0.15
+  content_structure: 0.15
+  knowledge_base: 0.15
+  channel_coverage: 0.15
+
+high_risk_claims:
+  - "保证转化"
+  - "行业第一"
+  - "100%有效"
+  - "当天见效"
+  - "全网最低价"
+  - "保证销量翻倍"
+  - "爆款保证"
+  - "零库存风险"

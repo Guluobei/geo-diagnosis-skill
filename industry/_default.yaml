@@ -1,0 +1,62 @@
+name: 通用
+description: 默认通用行业配置
+target_users:
+  - type: 通用用户
+    needs: 了解品牌和产品
+    typical_queries: ["{brand}怎么样", "{brand}是什么", "{brand}靠谱吗"]
+question_categories:
+  - type: 品牌词
+    examples: ["{brand}怎么样", "{brand}评价", "{brand}官网"]
+    priority: high
+  - type: 产品词
+    examples: ["{brand}产品介绍", "{brand}功能", "{brand}价格"]
+    priority: high
+  - type: 场景词
+    examples: ["如何使用{brand}", "{brand}使用教程"]
+    priority: medium
+  - type: 对比词
+    examples: ["{brand}和{competitor}对比", "{brand}替代品"]
+    priority: medium
+  - type: 长尾词
+    examples: ["{brand}好不好用", "{brand}值得买吗"]
+    priority: low
+ai_platforms:
+  - name: 豆包
+    url: https://www.doubao.com
+    weight: 1.0
+  - name: 百度AI搜索
+    url: https://www.baidu.com
+    weight: 0.9
+  - name: Kimi
+    url: https://kimi.moonshot.cn
+    weight: 0.85
+  - name: 通义千问
+    url: https://tongyi.aliyun.com
+    weight: 0.8
+  - name: 智谱清言
+    url: https://chatglm.cn
+    weight: 0.75
+content_types:
+  - name: 产品介绍
+    priority: P0
+  - name: 使用教程
+    priority: P0
+  - name: FAQ
+    priority: P1
+  - name: 客户案例
+    priority: P1
+  - name: 行业解决方案
+    priority: P2
+scoring_weights:
+  brand_mention: 0.20
+  answer_accuracy: 0.20
+  source_citation: 0.15
+  content_structure: 0.15
+  knowledge_base: 0.15
+  channel_coverage: 0.15
+high_risk_claims:
+  - "保证转化"
+  - "行业第一"
+  - "100%有效"
+  - "当天见效"
+  - "全网最低价"

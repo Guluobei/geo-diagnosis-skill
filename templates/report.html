@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{meta.brand}} - GEO诊断报告</title>
+<style>
+/* ===== CSS Variables ===== */
+:root {
+  --bg: #FAFBFC;
+  --bg2: #F0F2F5;
+  --ink: #1A1D23;
+  --muted: #6B7280;
+  --rule: #E2E5EA;
+  --accent: #0F766E;
+  --accent2: #0EA5E9;
+  --white: #FFFFFF;
+  --green: #16A34A;
+  --yellow: #CA8A04;
+  --red: #DC2626;
+  --blue: #2563EB;
+  --radius: 8px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --font-main: 'InstrumentSans', 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+body {
+  font-family: var(--font-main);
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.7;
+  padding: 0;
+}
+
+/* ===== Typography ===== */
+h1 { font-size: 2rem; font-weight: 700; line-height: 1.3; color: var(--ink); }
+h2 { font-size: 1.5rem; font-weight: 700; line-height: 1.35; color: var(--ink); margin-top: 2.5rem; margin-bottom: 1rem; }
+h3 { font-size: 1.15rem; font-weight: 600; line-height: 1.4; color: var(--ink); margin-top: 1.5rem; margin-bottom: 0.75rem; }
+h4 { font-size: 1rem; font-weight: 600; color: var(--ink); margin-top: 1.25rem; margin-bottom: 0.5rem; }
+p { margin-bottom: 0.75rem; color: var(--ink); }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+strong { font-weight: 600; }
+small { font-size: 0.85rem; color: var(--muted); }
+
+/* ===== Layout ===== */
+.container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+.page-break { page-break-before: always; }
+
+/* ===== Header ===== */
+.report-header {
+  background: linear-gradient(135deg, var(--accent) 0%, #134E4A 100%);
+  color: var(--white);
+  padding: 3rem 2rem;
+  border-radius: var(--radius);
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.report-header::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 400px;
+  height: 400px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 50%;
+}
+.report-header h1 { color: var(--white); font-size: 2.25rem; margin-bottom: 0.5rem; }
+.report-header .subtitle { font-size: 1.1rem; opacity: 0.85; margin-bottom: 1.5rem; }
+
+/* ===== Meta Grid ===== */
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+.meta-grid .meta-item {
+  background: rgba(255,255,255,0.12);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+}
+.meta-grid .meta-label { font-size: 0.8rem; opacity: 0.7; margin-bottom: 0.25rem; }
+.meta-grid .meta-value { font-size: 1rem; font-weight: 600; }
+
+/* ===== Table of Contents ===== */
+.toc {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+}
+.toc h3 { margin-top: 0; margin-bottom: 1rem; font-size: 1.1rem; }
+.toc ol { list-style: none; counter-reset: toc-counter; padding-left: 0; }
+.toc ol li { counter-increment: toc-counter; padding: 0.4rem 0; border-bottom: 1px solid var(--bg2); }
+.toc ol li:last-child { border-bottom: none; }
+.toc ol li::before {
+  content: counter(toc-counter, decimal-leading-zero);
+  color: var(--accent);
+  font-weight: 700;
+  margin-right: 0.75rem;
+  font-size: 0.9rem;
+}
+.toc ol li a { color: var(--ink); font-weight: 500; }
+.toc ol li a:hover { color: var(--accent); }
+
+/* ===== Section ===== */
+.section {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--bg2);
+}
+.section-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--accent);
+  color: var(--white);
+  border-radius: 50%;
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.section-title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+.section-desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem; }
+
+/* ===== Table Wrap ===== */
+.table-wrap {
+  overflow-x: auto;
+  margin: 1rem 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+.table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.table-wrap th {
+  background: var(--bg2);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid var(--rule);
+  white-space: nowrap;
+}
+.table-wrap td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.table-wrap tr:last-child td { border-bottom: none; }
+.table-wrap tr:hover td { background: var(--bg); }
+
+/* ===== Score Grid & Score Card ===== */
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.score-card {
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.score-card .score-label { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem; }
+.score-card .score-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+.score-card .score-value.excellent { color: var(--green); }
+.score-card .score-value.good { color: var(--accent); }
+.score-card .score-value.fair { color: var(--yellow); }
+.score-card .score-value.poor { color: var(--red); }
+.score-card .score-max { font-size: 0.85rem; color: var(--muted); }
+.score-card .score-bar {
+  height: 4px;
+  background: var(--bg2);
+  border-radius: 2px;
+  margin-top: 0.75rem;
+  overflow: hidden;
+}
+.score-card .score-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+.score-card .score-bar-fill.excellent { background: var(--green); }
+.score-card .score-bar-fill.good { background: var(--accent); }
+.score-card .score-bar-fill.fair { background: var(--yellow); }
+.score-card .score-bar-fill.poor { background: var(--red); }
+
+/* ===== Checklist ===== */
+.checklist { list-style: none; padding: 0; margin: 1rem 0; }
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--bg2);
+  font-size: 0.9rem;
+}
+.checklist li:last-child { border-bottom: none; }
+.checklist .check-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-top: 0.15rem;
+}
+.checklist .check-icon.pass { background: var(--green); }
+.checklist .check-icon.fail { background: var(--red); }
+.checklist .check-icon.partial { background: var(--yellow); }
+.checklist .check-icon.pending { background: var(--muted); }
+
+/* ===== Callout ===== */
+.callout {
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius);
+  margin: 1rem 0;
+  font-size: 0.9rem;
+  border-left: 4px solid;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+.callout .callout-icon { flex-shrink: 0; font-size: 1.1rem; margin-top: 0.1rem; }
+.callout .callout-body { flex: 1; }
+.callout .callout-title { font-weight: 600; margin-bottom: 0.25rem; }
+.callout.warn {
+  background: #FFFBEB;
+  border-color: var(--yellow);
+  color: #92400E;
+}
+.callout.danger {
+  background: #FEF2F2;
+  border-color: var(--red);
+  color: #991B1B;
+}
+.callout.info {
+  background: #EFF6FF;
+  border-color: var(--blue);
+  color: #1E40AF;
+}
+
+/* ===== Tag ===== */
+.tag {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.tag.green { background: #DCFCE7; color: #166534; }
+.tag.yellow { background: #FEF9C3; color: #854D0E; }
+.tag.red { background: #FEE2E2; color: #991B1B; }
+.tag.blue { background: #DBEAFE; color: #1E40AF; }
+
+/* ===== Priority Matrix ===== */
+.matrix-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.matrix-quadrant {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+.matrix-quadrant h4 {
+  font-size: 0.9rem;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px dashed var(--rule);
+}
+.matrix-quadrant.urgent { border-color: var(--red); background: #FEF2F2; }
+.matrix-quadrant.urgent h4 { color: var(--red); }
+.matrix-quadrant.important { border-color: var(--yellow); background: #FFFBEB; }
+.matrix-quadrant.important h4 { color: #92400E; }
+.matrix-quadrant.maintain { border-color: var(--accent); background: #F0FDFA; }
+.matrix-quadrant.maintain h4 { color: var(--accent); }
+.matrix-quadrant.low { border-color: var(--muted); background: var(--bg); }
+.matrix-quadrant.low h4 { color: var(--muted); }
+
+/* ===== Timeline ===== */
+.timeline { margin: 1rem 0; }
+.timeline-item {
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  position: relative;
+}
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 32px;
+  bottom: 0;
+  width: 2px;
+  background: var(--rule);
+}
+.timeline-item:last-child::before { display: none; }
+.timeline-marker {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.timeline-content { flex: 1; }
+.timeline-content h4 { margin-top: 0; }
+.timeline-content .timeline-desc { font-size: 0.9rem; color: var(--muted); }
+
+/* ===== Pitfall Card ===== */
+.pitfall-card {
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+.pitfall-card:last-child { margin-bottom: 0; }
+.pitfall-card .pitfall-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.pitfall-card .pitfall-title { font-weight: 600; }
+.pitfall-card .pitfall-body { font-size: 0.9rem; color: var(--muted); }
+.pitfall-card .pitfall-fix {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.9rem;
+}
+
+/* ===== Template Card ===== */
+.template-card {
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+.template-card:last-child { margin-bottom: 0; }
+.template-card .template-name { font-weight: 600; margin-bottom: 0.5rem; }
+.template-card .template-content {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 1rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  font-family: 'Courier New', monospace;
+}
+
+/* ===== Footer ===== */
+.report-footer {
+  text-align: center;
+  padding: 2rem 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--rule);
+  margin-top: 2rem;
+}
+
+/* ===== Responsive: 768px ===== */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  .report-header { padding: 2rem 1.25rem; }
+  .report-header h1 { font-size: 1.75rem; }
+  .section { padding: 1.25rem; }
+  .meta-grid { grid-template-columns: repeat(2, 1fr); }
+  .score-grid { grid-template-columns: repeat(2, 1fr); }
+  .matrix-grid { grid-template-columns: 1fr; }
+  h2 { font-size: 1.25rem; }
+}
+
+/* ===== Responsive: 480px ===== */
+@media (max-width: 480px) {
+  .report-header { padding: 1.5rem 1rem; }
+  .report-header h1 { font-size: 1.4rem; }
+  .section { padding: 1rem; }
+  .meta-grid { grid-template-columns: 1fr; }
+  .score-grid { grid-template-columns: 1fr; }
+  .toc { padding: 1rem; }
+  .table-wrap { font-size: 0.8rem; }
+  .table-wrap th, .table-wrap td { padding: 0.5rem 0.65rem; }
+}
+
+/* ===== Print ===== */
+@media print {
+  body { background: var(--white); font-size: 12pt; }
+  .container { max-width: 100%; padding: 0; }
+  .report-header { border-radius: 0; padding: 2rem; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .section { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+  .page-break { page-break-before: always; }
+  .score-card, .tag, .callout, .matrix-quadrant { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .toc { display: none; }
+  .report-footer { display: none; }
+  a { color: var(--ink); text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ============================================================ -->
+<!-- HEADER                                                        -->
+<!-- ============================================================ -->
+<div class="report-header">
+  <h1>{{meta.brand}} - GEO诊断报告</h1>
+  <p class="subtitle">{{meta.industry}}行业 AI搜索引擎优化诊断</p>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <div class="meta-label">诊断日期</div>
+      <div class="meta-value">{{meta.date}}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">诊断师</div>
+      <div class="meta-value">{{meta.diagnostician}}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">行业</div>
+      <div class="meta-value">{{meta.industry}}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">报告版本</div>
+      <div class="meta-value">v1.0</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TABLE OF CONTENTS                                             -->
+<!-- ============================================================ -->
+<div class="toc">
+  <h3>目录</h3>
+  <ol>
+    <li><a href="#sec1">诊断目标与用户画像</a></li>
+    <li><a href="#sec2">AI平台问答实测</a></li>
+    <li><a href="#sec3">品牌信息覆盖度</a></li>
+    <li><a href="#sec4">内容结构合规性</a></li>
+    <li><a href="#sec5">分发渠道覆盖</a></li>
+    <li><a href="#sec6">素材资产管理</a></li>
+    <li><a href="#sec7">综合评分与优先级矩阵</a></li>
+    <li><a href="#sec8">常见误区与风险提示</a></li>
+    <li><a href="#sec9">优化行动计划</a></li>
+    <li><a href="#sec10">回答模板库</a></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 1: 诊断目标与用户画像                                   -->
+<!-- ============================================================ -->
+<div class="section" id="sec1">
+  <div class="section-header">
+    <span class="section-number">1</span>
+    <h2 class="section-title">诊断目标与用户画像</h2>
+  </div>
+  <p class="section-desc">明确本次诊断的核心目标、目标用户群体及核心问题集。</p>
+
+  <h3>1.1 诊断目标</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>目标编号</th>
+          <th>目标描述</th>
+          <th>优先级</th>
+          <th>衡量指标</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#foreach goals}}
+        <tr>
+          <td>{{id}}</td>
+          <td>{{description}}</td>
+          <td><span class="tag {{priority_tag}}">{{priority}}</span></td>
+          <td>{{metric}}</td>
+        </tr>
+        {{/foreach}}
+      </tbody>
+    </table>
+  </div>
+
+  <h3>1.2 目标用户画像</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>用户类型</th>
+          <th>核心需求</th>
+          <th>典型查询</th>
+          <th>决策阶段</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#foreach target_users}}
+        <tr>
+          <td>{{type}}</td>
+          <td>{{needs}}</td>
+          <td>{{typical_queries}}</td>
+          <td><span class="tag blue">{{stage}}</span></td>
+        </tr>
+        {{/foreach}}
+      </tbody>
+    </table>
+  </div>
+
+  <h3>1.3 核心问题集</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>问题类别</th>
+          <th>示例问题</th>
+          <th>优先级</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#foreach question_set}}
+        <tr>
+          <td>{{category}}</td>
+          <td>{{examples}}</td>
+          <td><span class="tag {{priority_tag}}">{{priority}}</span></td>
+        </tr>
+        {{/foreach}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 2: AI平台问答实测                                      -->
+<!-- ============================================================ -->
+<div class="section page-break" id="sec2">
+  <div class="section-header">
+    <span class="section-number">2</span>
+    <h2 class="section-title">AI平台问答实测</h2>
+  </div>
+  <p class="section-desc">在主流AI平台上对品牌进行实际问答测试，评估品牌在各平台的可见度与回答质量。</p>
+
+  <h3>2.1 测试平台概览</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>平台名称</th>
+          <th>测试日期</th>
+          <th>测试问题数</th>
+          <th>品牌提及率</th>
+          <th>回答准确度</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#foreach platforms}}
+        <tr>
+          <td><strong>{{name}}</strong></td>
+          <td>{{test_date}}</td>
+          <td>{{question_count}}</td>
+          <td><span class="tag {{mention_tag}}">{{mention_rate}}</span></td>
+          <td><span class="tag {{accuracy_tag}}">{{accuracy}}</span></td>
+        </tr>
+        {{/foreach}}
+      </tbody>
+    </table>
+  </div>
+
+  <h3>2.2 问答记录详情</h3>
+  {{#foreach question_records}}
+  <div class="callout {{severity}}">
+    <span class="callout-icon">{{severity_icon}}</span>
+    <div class="callout-body">
+      <div class="callout-title">Q{{index}}: {{question}}</div>
+      <p><strong>平台：</strong>{{platform}}</p>
+      <p><strong>AI回答摘要：</strong>{{answer_summary}}</p>
+      <p><strong>品牌提及：</strong>{{brand_mention}}</p>
+      <p><strong>信息来源：</strong>{{source}}</p>
+      <p><strong>评价：</strong>{{evaluation}}</p>
+    </div>
+  </div>
+  {{/foreach}}
+
+  <h3>2.3 信息来源偏好</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>来源类型</th>
+          <th>出现次数</th>
+          <th>占比</th>
+          <th>可信度评级</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#foreach source_preference}}
+        <tr>
+          <td>{{source_type}}</td>
+          <td>{{count}}</td>
+          <td>{{percentage}}</td>
+          <td><span class="tag {{credibility_tag}}">{{credibility}}</span></td>
+        </tr>
+        {{/foreach}}
+      </tbody>
+    </table>
+  </div>
+
+  <h3>2.4 缺失信息汇总</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>缺失信息</th>
+          <th>影响范围</th>
+          <th>严重程度</th>
+          <th>建议操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#foreach missing_info}}
+        <tr>
+          <td>{{info}}</td>
+          <td>{{impact}}</td>
+          <td><span class="tag {{severity_tag}}">{{severity}}</span></td>
+          <td>{{suggestion}}</td>
+        </tr>
+        {{/foreach}}
+      </tbody>
+    </table>
+  </div>
+
+  <h3>2.5 回答结构分析</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>结构维度</th>
+          <th>达标情况</th>
+          <th>说明</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#foreach answer_structure}}
+        <tr>
+          <td>{{dimension}}</td>
+          <td><span class="tag {{status_tag}}">{{status}}</span></td>
+          <td>{{description}}</td>
+        </tr>
+        {{/foreach}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 3: 品牌信息覆盖度                                       -->
+<!-- ============================================================ -->
+<div class="section page-break" id="sec3">
+  <div class="section-header">
+    <span class="section-number">3</span>
+    <h2 class="section-title">品牌信息覆盖度</h2>
+  </div>
+  <p class="section-desc">评估品牌核心信息在AI可获取来源中的覆盖程度。</p>
+
+  <h3>3.1 信息覆盖总览</h3>
+  <div class="score-grid">
+    {{#foreach coverage}}
+    <div class="score-card">
+      <div class="score-label">{{category}}</div>
+      <div class="score-value {{grade_class}}">{{score}}</div>
+      <div class="score-max">/ {{max_score}}</div>
+      <div class="score-bar"><div class="score-bar-fill {{grade_class}}" style="width:{{percentage}}%"></div></div>
+    </div>
+    {{/foreach}}
+  </div>
+
+  <h3>3.2 信息卡片</h3>
+  {{#foreach fact_cards}}
+  <div class="pitfall-card">
+    <div class="pitfall-header">
+      <span class="tag {{status_tag}}">{{status}}</span>
+      <span class="pitfall-title">{{title}}</span>
+    </div>
+    <div class="pitfall-body">
+      <p><strong>当前状态：</strong>{{current_state}}</p>
+      <p><strong>AI认知：</strong>{{ai_perception}}</p>
+      <p><strong>差距分析：</strong>{{gap_analysis}}</p>
+    </div>
+  </div>
+  {{/foreach}}
+
+  <h3>3.3 信息一致性检查</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>信息项</th>
+          <th>官网</th>
+          <th>第三方平台</th>
+          <th>AI回答</th>
+          <th>一致性</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#foreach consistency}}
+        <tr>
+          <td>{{item}}</td>
+          <td>{{official}}</td>
+          <td>{{third_party}}</td>
+          <td>{{ai_answer}}</td>
+          <td><span class="tag {{consistency_tag}}">{{consistency}}</span></td>
+        </tr>
+        {{/foreach}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4: 内容结构合规性                                       -->
+<!-- ============================================================ -->
+<div class="section page-break" id="sec4">
+  <div class="section-header">
+    <span class="section-number">4</span>
+    <h2 class="section-title">内容结构合规性</h2>
+  </div>
+  <p class="section-desc">检查现有内容是否满足AI搜索引擎的结构化抓取要求。</p>
+
+  <h3>4.1 内容清单</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>内容类型</th>
+          <th>优先级</th>
+          <th>当前状态</th>
+          <th>URL/位置</th>
+          <th>更新日期</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#foreach content_list}}
+        <tr>
+          <td>{{type}}</td>
+          <td><span class="tag {{priority_tag}}">{{priority}}</span></td>
+          <td><span class="tag {{status_tag}}">{{status}}</span></td>
+          <td>{{url}}</td>
+          <td>{{updated_at}}</td>
+        </tr>
+        {{/foreach}}
+      </tbody>
+    </table>
+  </div>
+
+  <h3>4.2 结构合规检查</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>合规项</th>
+          <th>要求</th>
+          <th>当前状态</th>
+          <th>备注</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#foreach structure_compliance}}
+        <tr>
+          <td>{{item}}</td>
+          <td>{{requirement}}</td>
+          <td><span class="tag {{status_tag}}">{{status}}</span></td>
+          <td>{{note}}</td>
+        </tr>
+        {{/foreach}}
+      </tbody>
+    </table>
+  </div>
+
+  <h3>4.3 内容质量检查清单</h3>
+  <ul class="checklist">
+    {{_checklist content_quality_checks}}
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 5: 分发渠道覆盖                                        -->
+<!-- ============================================================ -->
+<div class="section page-break" id="sec5">
+  <div class="section-header">
+    <span class="section-number">5</span>
+    <h2 class="section-title">分发渠道覆盖</h2>
+  </div>
+  <p class="section-desc">评估品牌在自有渠道、第三方平台和分发层级的覆盖情况。</p>
+
+  <h3>5.1 自有渠道</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>渠道</th>
+          <th>类型</th>
+          <th>状态</th>
+          <th>AI可抓取</th>
+          <th>内容丰富度</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#foreach owned_channels}}
+        <tr>
+          <td><strong>{{name}}</strong></td>
+          <td>{{type}}</td>
+          <td><span class="tag {{status_tag}}">{{status}}</span></td>
+          <td><span class="tag {{crawl_tag}}">{{crawlable}}</span></td>
+          <td><span class="tag {{richness_tag}}">{{richness}}</span></td>
+        </tr>
+        {{/foreach}}
+      </tbody>
+    </table>
+  </div>
+
+  <h3>5.2 第三方平台</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>平台</th>
+          <th>入驻状态</th>
+          <th>内容量</th>
+          <th>更新频率</th>
+          <th>影响力</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#foreach third_party}}
+        <tr>
+          <td><strong>{{name}}</strong></td>
+          <td><span class="tag {{status_tag}}">{{status}}</span></td>
+          <td>{{content_count}}</td>
+          <td>{{frequency}}</td>
+          <td><span class="tag {{impact_tag}}">{{impact}}</span></td>
+        </tr>
+        {{/foreach}}
+      </tbody>
+    </table>
+  </div>
+
+  <h3>5.3 分发层级分析</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>层级</th>
+          <th>渠道数</th>
+          <th>覆盖评分</th>
+          <th>改进建议</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#foreach distribution_layers}}
+        <tr>
+          <td><strong>{{layer}}</strong></td>
+          <td>{{channel_count}}</td>
+          <td><span class="tag {{score_tag}}">{{score}}</span></td>
+          <td>{{suggestion}}</td>
+        </tr>
+        {{/foreach}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 6: 素材资产管理                                         -->
+<!-- ============================================================ -->
+<div class="section page-break" id="sec6">
+  <div class="section-header">
+    <span class="section-number">6</span>
+    <h2 class="section-title">素材资产管理</h2>
+  </div>
+  <p class="section-desc">盘点品牌可复用的素材资产及管理规范。</p>
+
+  <h3>6.1 素材清单</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>素材名称</th>
+          <th>类型</th>
+          <th>格式</th>
+          <th>适用场景</th>
+          <th>更新日期</th>
+          <th>状态</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#foreach materials}}
+        <tr>
+          <td><strong>{{name}}</strong></td>
+          <td>{{type}}</td>
+          <td>{{format}}</td>
+          <td>{{usage}}</td>
+          <td>{{updated_at}}</td>
+          <td><span class="tag {{status_tag}}">{{status}}</span></td>
+        </tr>
+        {{/foreach}}
+      </tbody>
+    </table>
+  </div>
+
+  <h3>6.2 管理规范检查</h3>
+  <ul class="checklist">
+    {{_checklist management_rules}}
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 7: 综合评分与优先级矩阵                                   -->
+<!-- ============================================================ -->
+<div class="section page-break" id="sec7">
+  <div class="section-header">
+    <span class="section-number">7</span>
+    <h2 class="section-title">综合评分与优先级矩阵</h2>
+  </div>
+  <p class="section-desc">基于六维评分模型，给出品牌GEO综合评分及优化优先级。</p>
+
+  <h3>7.1 六维评分</h3>
+  <div class="score-grid">
+    {{#foreach scores}}
+    <div class="score-card">
+      <div class="score-label">{{dimension}}</div>
+      <div class="score-value {{grade_class}}">{{score}}</div>
+      <div class="score-max">/ {{max_score}}</div>
+      <div class="score-bar"><div class="score-bar-fill {{grade_class}}" style="width:{{percentage}}%"></div></div>
+    </div>
+    {{/foreach}}
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">i</span>
+    <div class="callout-body">
+      <div class="callout-title">综合得分</div>
+      <p>加权总分：<strong>{{total_score}}</strong> / 100，等级：<span class="tag {{overall_tag}}">{{overall_grade}}</span></p>
+    </div>
+  </div>
+
+  <h3>7.2 优先级矩阵</h3>
+  <div class="matrix-grid">
+    <div class="matrix-quadrant urgent">
+      <h4>紧急且重要（立即处理）</h4>
+      {{#foreach priority_matrix.urgent}}
+      <p><span class="tag red">{{impact}}</span> {{item}}</p>
+      {{/foreach}}
+    </div>
+    <div class="matrix-quadrant important">
+      <h4>重要不紧急（计划处理）</h4>
+      {{#foreach priority_matrix.important}}
+      <p><span class="tag yellow">{{impact}}</span> {{item}}</p>
+      {{/foreach}}
+    </div>
+    <div class="matrix-quadrant maintain">
+      <h4>紧急不重要（委托处理）</h4>
+      {{#foreach priority_matrix.maintain}}
+      <p><span class="tag green">{{impact}}</span> {{item}}</p>
+      {{/foreach}}
+    </div>
+    <div class="matrix-quadrant low">
+      <h4>不紧急不重要（持续关注）</h4>
+      {{#foreach priority_matrix.low}}
+      <p><span class="tag blue">{{impact}}</span> {{item}}</p>
+      {{/foreach}}
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 8: 常见误区与风险提示                                    -->
+<!-- ============================================================ -->
+<div class="section page-break" id="sec8">
+  <div class="section-header">
+    <span class="section-number">8</span>
+    <h2 class="section-title">常见误区与风险提示</h2>
+  </div>
+  <p class="section-desc">列举GEO优化中常见的误区和潜在风险，帮助品牌避坑。</p>
+
+  {{#foreach pitfalls}}
+  <div class="pitfall-card">
+    <div class="pitfall-header">
+      <span class="tag {{severity_tag}}">{{severity}}</span>
+      <span class="pitfall-title">{{title}}</span>
+    </div>
+    <div class="pitfall-body">
+      <p>{{description}}</p>
+    </div>
+    <div class="pitfall-fix">
+      <strong>正确做法：</strong>{{fix}}
+    </div>
+  </div>
+  {{/foreach}}
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 9: 优化行动计划                                         -->
+<!-- ============================================================ -->
+<div class="section page-break" id="sec9">
+  <div class="section-header">
+    <span class="section-number">9</span>
+    <h2 class="section-title">优化行动计划</h2>
+  </div>
+  <p class="section-desc">按周拆分的4周优化行动计划，包含具体任务和衡量指标。</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-marker">W1</div>
+      <div class="timeline-content">
+        <h4>第一周：基础信息补全</h4>
+        <p class="timeline-desc">完善品牌基础信息，确保AI可获取核心事实。</p>
+        <ul class="checklist">
+          {{_checklist week1}}
+        </ul>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-marker">W2</div>
+      <div class="timeline-content">
+        <h4>第二周：内容结构优化</h4>
+        <p class="timeline-desc">优化现有内容结构，提升AI抓取效率。</p>
+        <ul class="checklist">
+          {{_checklist week2}}
+        </ul>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-marker">W3</div>
+      <div class="timeline-content">
+        <h4>第三周：渠道扩展与分发</h4>
+        <p class="timeline-desc">扩展内容分发渠道，增加品牌信息触达面。</p>
+        <ul class="checklist">
+          {{_checklist week3}}
+        </ul>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-marker">W4</div>
+      <div class="timeline-content">
+        <h4>第四周：效果验证与迭代</h4>
+        <p class="timeline-desc">验证优化效果，持续迭代改进。</p>
+        <ul class="checklist">
+          {{_checklist week4}}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>9.2 衡量指标</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>指标名称</th>
+          <th>当前值</th>
+          <th>目标值</th>
+          <th>衡量方式</th>
+          <th>检查周期</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#foreach metrics}}
+        <tr>
+          <td><strong>{{name}}</strong></td>
+          <td>{{current}}</td>
+          <td>{{target}}</td>
+          <td>{{method}}</td>
+          <td>{{cycle}}</td>
+        </tr>
+        {{/foreach}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 10: 回答模板库                                          -->
+<!-- ============================================================ -->
+<div class="section page-break" id="sec10">
+  <div class="section-header">
+    <span class="section-number">10</span>
+    <h2 class="section-title">回答模板库</h2>
+  </div>
+  <p class="section-desc">为高频问题提供标准化回答模板，确保品牌信息一致性。</p>
+
+  {{#foreach templates}}
+  <div class="template-card">
+    <div class="template-name">{{name}} <span class="tag {{priority_tag}}">{{priority}}</span></div>
+    <p><strong>适用问题：</strong>{{applicable_questions}}</p>
+    <div class="template-content">{{content}}</div>
+  </div>
+  {{/foreach}}
+</div>
+
+<!-- ============================================================ -->
+<!-- FOOTER                                                         -->
+<!-- ============================================================ -->
+<div class="report-footer">
+  <p>{{meta.brand}} GEO诊断报告 | 生成日期：{{meta.date}} | 诊断师：{{meta.diagnostician}}</p>
+  <p>本报告由 GEO诊断系统自动生成，仅供参考。</p>
+</div>
+
+</div>
+</body>
+</html>

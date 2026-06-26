@@ -1,0 +1,97 @@
+name: SaaS
+description: SaaS行业配置，适用于软件即服务类产品
+extends: _default
+
+target_users:
+  - type: 跨境电商卖家
+    needs: 提升运营效率、降低人工成本、自动化流程
+    typical_queries: ["{brand}适合跨境电商吗", "{brand}ERP功能", "{brand}定价方案"]
+  - type: 国内电商运营
+    needs: 多店铺管理、数据分析、库存同步
+    typical_queries: ["{brand}支持哪些平台", "{brand}数据分析功能", "{brand}和聚水潭对比"]
+  - type: 企业IT负责人
+    needs: 系统集成、数据安全、技术支持
+    typical_queries: ["{brand}API文档", "{brand}数据安全", "{brand}私有化部署"]
+  - type: 中小企业主
+    needs: 降低成本、快速上手、性价比
+    typical_queries: ["{brand}多少钱", "{brand}免费版功能", "{brand}好不好用"]
+
+question_categories:
+  - type: 品牌词
+    examples: ["{brand}怎么样", "{brand}评价", "{brand}官网", "{brand}可靠吗"]
+    priority: high
+  - type: 产品词
+    examples: ["{brand}功能介绍", "{brand}价格", "{brand}版本对比", "{brand}API"]
+    priority: high
+  - type: 场景词
+    examples: ["{brand}跨境电商使用", "{brand}多店铺管理", "{brand}如何集成"]
+    priority: high
+  - type: 对比词
+    examples: ["{brand}和{competitor}对比", "{brand}替代品", "{brand}vs{competitor}"]
+    priority: high
+  - type: 技术词
+    examples: ["{brand}API接口", "{brand}部署方式", "{brand}数据迁移"]
+    priority: medium
+  - type: 价格词
+    examples: ["{brand}收费吗", "{brand}免费试用", "{brand}企业版价格"]
+    priority: medium
+  - type: 长尾词
+    examples: ["{brand}适合小团队吗", "{brand}值得买吗", "{brand}客户案例"]
+    priority: low
+
+ai_platforms:
+  - name: 豆包
+    url: https://www.doubao.com
+    weight: 1.0
+  - name: 百度AI搜索
+    url: https://www.baidu.com
+    weight: 0.9
+  - name: Kimi
+    url: https://kimi.moonshot.cn
+    weight: 0.85
+  - name: 通义千问
+    url: https://tongyi.aliyun.com
+    weight: 0.8
+  - name: 智谱清言
+    url: https://chatglm.cn
+    weight: 0.75
+
+content_types:
+  - name: 产品功能介绍
+    priority: P0
+  - name: 定价方案
+    priority: P0
+  - name: API文档
+    priority: P0
+  - name: 使用教程
+    priority: P0
+  - name: 客户案例
+    priority: P1
+  - name: 常见问题FAQ
+    priority: P1
+  - name: 版本更新日志
+    priority: P1
+  - name: 行业解决方案
+    priority: P2
+  - name: 数据安全白皮书
+    priority: P2
+  - name: 集成指南
+    priority: P2
+
+scoring_weights:
+  brand_mention: 0.20
+  answer_accuracy: 0.20
+  source_citation: 0.15
+  content_structure: 0.15
+  knowledge_base: 0.15
+  channel_coverage: 0.15
+
+high_risk_claims:
+  - "保证转化"
+  - "行业第一"
+  - "100%有效"
+  - "当天见效"
+  - "全网最低价"
+  - "无限并发"
+  - "零延迟"
+  - "永久免费"
